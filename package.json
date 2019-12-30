@@ -1,0 +1,26 @@
+{
+  "name": "complex-app(social-nettwork)",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "watch": "nodemon app",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AmirSejdinovic/Litle-social-network-Node.js-MongoDB.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/AmirSejdinovic/Litle-social-network-Node.js-MongoDB/issues"
+  },
+  "homepage": "https://github.com/AmirSejdinovic/Litle-social-network-Node.js-MongoDB#readme",
+  "dependencies": {
+    "ejs": "^3.0.1",
+    "express": "^4.17.1",
+    "nodemon": "^2.0.2"
+  }
+}
