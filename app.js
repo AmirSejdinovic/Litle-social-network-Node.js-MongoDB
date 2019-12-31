@@ -6,6 +6,10 @@ const router = require('./router');
 
 //Here I create the variable app and sotre the call for express function
 const app = express();
+//This enables us to acces to input data 
+app.use(express.urlencoded({extended: false}));
+//This will convert input data in json format
+app.use(express.json());
 //Here I tell express to use the public dir 
 app.use(express.static('public'))
 //Here we set express to render the html set method must have two arguments firs must be the views this is the default by express and second argument are the name of folder in which we'll create our views
