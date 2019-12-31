@@ -15,8 +15,11 @@ exports.register = function(req, res){
     let user = new User(req.body);
     //Whith this we call method on new instace of user. Method is stored as prototype in the app.js
     user.register();
-   
-    res.send("Thanks for trying to register");
+    if(user.errors.length){
+        res.send(user.errors);
+    }else{
+       res.send("Congrats, there are no errors");
+    }
 }
 //This function will be called when someone visits base url
 exports.home= function(req,res){
