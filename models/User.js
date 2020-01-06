@@ -1,3 +1,6 @@
+//Require the db connection and looking into the users table
+const usersCollection = require("../db").collection("users");
+
 //Importing the validator pakage
 const validator = require("validator");
 
@@ -86,6 +89,11 @@ User.prototype.register = function(){
    //Caling the validate method. I created it above
     this.validate();
    //Step no2: Only if there are no validation errors then save the user data into database
+   //If there have no errors than do this
+   if(!this.errors.length){
+       usersCollection.insertOne(this.data);
+   }
+
 }
 //Exports the function so I can use it in another file
 module.exports = User;

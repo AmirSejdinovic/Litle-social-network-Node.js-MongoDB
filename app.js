@@ -18,6 +18,6 @@ app.set('views', 'views');
 app.set('view engine', 'ejs');
 //Here I call method of use and pased two arguments first is the url for which I will use the router and the second is the variable which contains router cll
 app.use('/',router);
+//Exporting the variable app on which I created the server. The listen method I will be use on file of database connection. And there I will lunch the app only when the databse is fully connected and loaded
+module.exports = app;
 
-//Here I tell my app to listens port 3000. This mean when user send request with port of 3000 like localhost:3000 than the express will do the funciton above
-app.listen(3000)
