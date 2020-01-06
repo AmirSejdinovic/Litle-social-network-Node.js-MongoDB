@@ -9,6 +9,32 @@ let User = function(data){
   this.errors = [];
    
 }
+//Creating the clean up method
+//I creating the method via prototype 
+User.prototype.cleanUp = function(){
+  //In this if statement I checking if the inputed username is not string. If it is not a string than assigne the username empty string
+  if(typeof(this.data.username)  != "string"){
+     this.data.username = "";
+  }
+//If the email is not type of string
+  if(typeof(this.data.email) != "string"){
+   this.data.email = "";
+  }
+//If the password is not type of string
+  if(typeof(this.data.password) != "string"){
+    this.data.password = "";
+  }
+
+  //Get rid of any bogus propreties
+  //Here I update the data and assigned it as object and pase in only parametars I want to collect from users.
+  //Method trim() is method which trim all white or blank space in input
+  //Method toLowerCase() is method which converts all characters in input in lower casess
+  this.data = {
+    username: this.data.username.trim().toLowerCase(),
+    email: this.data.email.trim().toLowerCase(),
+    password: this.data.password
+  }
+}
 //Creating the validate method
 User.prototype.validate = function(){
   //If the data from the username is empty do this
@@ -55,6 +81,7 @@ User.prototype.validate = function(){
 }
 //With this way I created the method in User constructor. This way of creating methods is much better because if we created the metod on this way we do not have a copy instance of this metod for each new instance but all of that new instance of the constructor will have the acces to this method. With this form we as pototype of the user created method which wil be one and all of instance of thaht constructor function will have acees to him. If we created the method on the old way as the function inside the constructor function this will copy that method every time when this constructor will be called
 User.prototype.register = function(){
+  this.cleanUp();
    //Step no1: Validate user data
    //Caling the validate method. I created it above
     this.validate();
