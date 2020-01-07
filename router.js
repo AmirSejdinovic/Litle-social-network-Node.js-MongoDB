@@ -11,6 +11,10 @@ router.get('/', userController.home);
 //Here I created the router for the register page. This mean when someone hit the submit button on the registration form that this controller will bi trigered. This router I created with the post method this is because the form have the action attribute of post
 router.post('/register', userController.register );
 
+//Here I created the rout for login fomr
+//The second argument is the function which will be crated in the userControler and named login
+router.post('/login', userController.login);
+
 
 //Exportting the router which I will fetch in the app.js
 module.exports = router;

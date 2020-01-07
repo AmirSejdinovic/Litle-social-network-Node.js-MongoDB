@@ -82,6 +82,22 @@ User.prototype.validate = function(){
 
 
 }
+//Creating the login method on user instance. 
+//In the function I recive the parametar as callback. This callback function will be provided as argument inside the userControler.
+User.prototype.login = function(callback){
+  //Calling up the cleanUp method. This will clenup the inputs.
+  this.cleanUp();
+  usersCollection.findOne({username: this.data.username}, (err, attemptedUser) => {
+    //if the attempteduser exists than do this code block
+    if(attemptedUser && attemptedUser.password == this.data.password){
+       //Calling the callback function
+       callback("Congrats!!")
+    }else{
+      //Calling the callback function
+      callback("Invalid username / pasword");
+    }
+  });
+}
 //With this way I created the method in User constructor. This way of creating methods is much better because if we created the metod on this way we do not have a copy instance of this metod for each new instance but all of that new instance of the constructor will have the acces to this method. With this form we as pototype of the user created method which wil be one and all of instance of thaht constructor function will have acees to him. If we created the method on the old way as the function inside the constructor function this will copy that method every time when this constructor will be called
 User.prototype.register = function(){
   this.cleanUp();
