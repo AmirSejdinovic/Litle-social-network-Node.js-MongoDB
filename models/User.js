@@ -91,6 +91,7 @@ User.prototype.register = function(){
    //Step no2: Only if there are no validation errors then save the user data into database
    //If there have no errors than do this
    if(!this.errors.length){
+     //insert into db 
        usersCollection.insertOne(this.data);
    }
 
