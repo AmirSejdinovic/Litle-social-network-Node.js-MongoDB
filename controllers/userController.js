@@ -7,8 +7,12 @@ exports.login = function(req,res){
    //Calling the method login. This method I will make in the model file.
    //Inside calling this method I crated the argument as function. This function is the callback function taht means when the method do his job (connecting to the database) than this function will be tirgerd
    //Inside the function i have the parametar of result and taht is the parametars from userModels where I handle if the username and password are corected and created there if statement
-   user.login(function(result){
-     res.send(result);
+   //Calling the promise wiht then and catch
+
+   user.login().then(function(result){
+     res.send(result); 
+   }).catch(function(e){
+       res.send(e);
    });
 }
 
