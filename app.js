@@ -2,12 +2,16 @@
 const express = require('express');
 //Importing the session npm package 
 const session = require('express-session');
+//Importing the connect-mongo npm package and referece to the session package above
+const MongoStore = require('connect-mongo')(session);
 
 const router = require('./router');
 //Configure the session package
 //Here I write the boilerplate code form npm package
+//Using monogostore to store sessions in the mongodb
 let sessionOptions = session({
   secret: "JavaScript is soo cool",
+  store: new MongoStore({client: require('./db')}),
   resave: false,
   saveUninitialized: false,
   cookie: {maxAge: 1000 * 60 * 60 * 24, httpOnly: true}

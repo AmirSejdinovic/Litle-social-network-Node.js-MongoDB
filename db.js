@@ -10,7 +10,7 @@ const mongodb = require("mongodb");
 //proecess.env.nameof variable whic is defined in the .env file this will return value from that variable
 mongodb.connect(process.env.CONNECTIONSTRING,{useNewUrlParser: true, useUnifiedTopology: true},function(err, client){
    
-  module.exports = client.db();
+  module.exports = client;
    //Importing the express aplication from the app.js file
   const app = require('./app');
   //After the connection with the database is established than listen to the port of 3000

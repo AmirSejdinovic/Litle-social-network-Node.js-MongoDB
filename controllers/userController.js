@@ -39,7 +39,9 @@ exports.register = function(req, res){
 exports.home= function(req,res){
     //This if statement will if the user have the session or it has loged in do the code of the if block, and if the user do not have the session than will be done the else code block
    if(req.session.user){
-     res.send("Wellcome to the actual application")
+ 
+    //Render the view
+     res.render('home-dashboard', {username: req.session.user.username});
    }else{
     res.render('home-guest'); 
    }

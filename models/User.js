@@ -1,7 +1,7 @@
 //Importing the bcrypt npm package
 const bcrypt = require('bcryptjs');
 //Require the db connection and looking into the users table
-const usersCollection = require("../db").collection("users");
+const usersCollection = require("../db").db().collection("users");
 
 //Importing the validator pakage
 const validator = require("validator");
