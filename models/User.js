@@ -1,3 +1,5 @@
+//Importing the bcrypt npm package
+const bcrypt = require('bcryptjs');
 //Require the db connection and looking into the users table
 const usersCollection = require("../db").collection("users");
 
@@ -68,8 +70,8 @@ User.prototype.validate = function(){
     this.errors.push("Password must bee at least 12 cahraterst")
   }
   //Whit this I checked that the password is not lenght more than 100 charachers
-  if(this.data.password.length > 100){
-     this.errors.push("Password canot  exceed 100 characters");
+  if(this.data.password.length > 50){
+     this.errors.push("Password canot  exceed 50 characters");
   }
   //Cheking the usrename cahracters
   if(this.data.username.length > 0 && this.data.username.length < 3){
@@ -93,7 +95,8 @@ User.prototype.login = function(){
   this.cleanUp();
 
   usersCollection.findOne({username: this.data.username}).then((attemptedUser)=>{
-    if(attemptedUser && attemptedUser.password == this.data.password){
+    //Here I check if the user is imput the same username as it exists in the db and I also use bycrypt compareSync method to compare password in db which is now hashed and the inputed value which will this method hashed with the same salt keys and the passwords will metch if the user is inputet the same password
+    if(attemptedUser && bcrypt.compareSync(this.data.password, attemptedUser.password)){
       //Calling the callback function
       resolve("Congrats!!")
    }else{
@@ -115,6 +118,11 @@ User.prototype.register = function(){
    //Step no2: Only if there are no validation errors then save the user data into database
    //If there have no errors than do this
    if(!this.errors.length){
+     //Hash user password using bcrpyt
+     //First I made the salt. Here I caling the bcrypt object and method genSaltSync inside the arguments I provide the nubmer of characters
+     let salt = bcrypt.genSaltSync(10);
+     //With this i update the user pasword and calling the bcrypt and method hashSyinc inisde of it i provide the inpudet user data and salt keys
+     this.data.password = bcrypt.hashSync(this.data.password, salt);
      //insert into db 
        usersCollection.insertOne(this.data);
    }
