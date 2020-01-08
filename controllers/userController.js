@@ -10,6 +10,9 @@ exports.login = function(req,res){
    //Calling the promise wiht then and catch
 
    user.login().then(function(result){
+      //Calling session on req object and creatihg the user proprety whic have this object
+      req.session.user = {favColor: "blue", username: user.data.username}; 
+
      res.send(result); 
    }).catch(function(e){
        res.send(e);
@@ -34,6 +37,11 @@ exports.register = function(req, res){
 }
 //This function will be called when someone visits base url
 exports.home= function(req,res){
-   res.render('home-guest'); 
+    //This if statement will if the user have the session or it has loged in do the code of the if block, and if the user do not have the session than will be done the else code block
+   if(req.session.user){
+     res.send("Wellcome to the actual application")
+   }else{
+    res.render('home-guest'); 
+   }
 }
 
