@@ -45,7 +45,16 @@ exports.register = function(req, res){
     //Whith this we call method on new instace of user. Method is stored as prototype in the app.js
     user.register();
     if(user.errors.length){
-        res.send(user.errors);
+         //Creating the forEach for flash messages
+        user.errors.forEach(function(error){
+            //Calling the model for flash mesages
+         req.flash('regErrors', error);
+        });
+        //Calling the method save and putin inside of it the callback function
+        req.session.save(function(){
+            res.redirect('/');
+        })
+          
     }else{
        res.send("Congrats, there are no errors");
     }
@@ -58,7 +67,7 @@ exports.home= function(req,res){
     //Render the view
      res.render('home-dashboard', {username: req.session.user.username});
    }else{
-    res.render('home-guest', {errors: req.flash('errors')}); 
+    res.render('home-guest', {errors: req.flash('errors'), regErrors: req.flash('regErrors')}); 
    }
 }
 

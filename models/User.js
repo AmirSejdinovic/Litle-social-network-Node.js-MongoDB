@@ -41,7 +41,7 @@ User.prototype.cleanUp = function(){
   }
 }
 //Creating the validate method
-User.prototype.validate = function(){
+User.prototype.validate = async function(){
   //If the data from the username is empty do this
    if(this.data.username == ""){
      //If the username is empty than push this text inside the errors porptey that i defined above
@@ -81,6 +81,20 @@ User.prototype.validate = function(){
   if(this.data.username.length > 30){
     this.errors.push("The usrname could not be more than 30 characthers");
   }
+
+  //Only if username is valid then check to see if its alredy taken
+  if(this.data.username.length > 2 && this.data.username.length < 31 && validator.isAlphanumeric(this.data.username)){
+     let usrnameExists = await usersCollection.findOne({username: this.data.username});
+     
+     if(usrnameExists){this.errors.push("That username is alerady taken")}
+  }
+//Only if email is valid than check to see if its already taken
+  if(validator.isEmail(this.data.email)){
+    let emailExists = await usersCollection.findOne({email: this.data.email});
+    
+    if(emailExists){this.errors.push("That email is alerady being used")}
+ }
+
 
 
 }
