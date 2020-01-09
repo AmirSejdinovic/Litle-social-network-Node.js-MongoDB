@@ -14,6 +14,8 @@ router.post('/register', userController.register );
 //Here I created the rout for login fomr
 //The second argument is the function which will be crated in the userControler and named login
 router.post('/login', userController.login);
+//Creating the router for logout button 
+router.post('/logout', userController.logout);
 
 
 //Exportting the router which I will fetch in the app.js

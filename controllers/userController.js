@@ -12,15 +12,24 @@ exports.login = function(req,res){
    user.login().then(function(result){
       //Calling session on req object and creatihg the user proprety whic have this object
       req.session.user = {favColor: "blue", username: user.data.username}; 
-
-     res.send(result); 
+      //Creating the ssesion and save method inside this method we put the callback function and after the save method do its job this callback function will be trigered and all code inside of it will run. I put there the redirect method
+      req.session.save(function(){
+          //Redirect to the home url
+        res.redirect('/');
+      })
    }).catch(function(e){
        res.send(e);
    });
 }
-
-exports.logout = function(){
-  
+//This function will be called when user cliks on the logout button, after that router will be called and procced to this function. Here I provide two parametars req and res for request and response 
+exports.logout = function(req,res){
+    //After the user cliks on the button of sign out this function will be trigered and it will call the req with session method destroy. If the req have cookie with session ID this method of destroy will find that cookie and destroy it.
+    //In the argument of this method I set the callback function which will be trigered after the destroy method destroy the session id in the database. After that it will trigered the callback function and it will redirect the to the home page with the redirect method in which I provided the url to home
+   req.session.destroy(function(){
+       res.redirect('/');
+   });
+   
+   
 }
 //This function will be called when someone click on registration form on the button submit
 exports.register = function(req, res){
