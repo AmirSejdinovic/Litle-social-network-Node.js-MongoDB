@@ -4,6 +4,9 @@ const express = require('express');
 const session = require('express-session');
 //Importing the connect-mongo npm package and referece to the session package above
 const MongoStore = require('connect-mongo')(session);
+//Importing the npm flash connect package and storing it in the constant
+const flash = require('connect-flash');
+
 
 const router = require('./router');
 //Configure the session package
@@ -24,6 +27,8 @@ const app = express();
 
 //We tell express app to use express sessions and in the argument provide the varialbe of the settings
 app.use(sessionOptions);
+//Adding the flash feature in the application
+app.use(flash());
 
 //This enables us to acces to input data 
 app.use(express.urlencoded({extended: false}));

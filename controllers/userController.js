@@ -18,7 +18,13 @@ exports.login = function(req,res){
         res.redirect('/');
       })
    }).catch(function(e){
-       res.send(e);
+       //Creating the flash messages
+       req.flash('errors', e);
+       //Creating session save method and provide it a callback function
+       req.session.save(function(){
+          //Redirecting to home
+       res.redirect('/');
+       });
    });
 }
 //This function will be called when user cliks on the logout button, after that router will be called and procced to this function. Here I provide two parametars req and res for request and response 
@@ -52,7 +58,7 @@ exports.home= function(req,res){
     //Render the view
      res.render('home-dashboard', {username: req.session.user.username});
    }else{
-    res.render('home-guest'); 
+    res.render('home-guest', {errors: req.flash('errors')}); 
    }
 }
 
