@@ -8,7 +8,8 @@ const MongoStore = require('connect-mongo')(session);
 const flash = require('connect-flash');
 
 
-const router = require('./router');
+
+
 //Configure the session package
 //Here I write the boilerplate code form npm package
 //Using monogostore to store sessions in the mongodb
@@ -25,10 +26,20 @@ let sessionOptions = session({
 //Here I create the variable app and sotre the call for express function
 const app = express();
 
+
+
 //We tell express app to use express sessions and in the argument provide the varialbe of the settings
 app.use(sessionOptions);
 //Adding the flash feature in the application
 app.use(flash());
+
+//Creating the midlewere function which will provide us a sessions
+app.use(function(req,res,next){
+  res.locals.user = req.session.user;
+  next();
+})
+
+const router = require('./router');
 
 //This enables us to acces to input data 
 app.use(express.urlencoded({extended: false}));
