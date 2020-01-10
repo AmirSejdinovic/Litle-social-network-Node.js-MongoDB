@@ -5,6 +5,8 @@ const usersCollection = require("../db").db().collection("users");
 
 //Importing the validator pakage
 const validator = require("validator");
+//Importing the md5 package
+const md5 = require("md5");
 
 //Crating the construct which will be a bluebprint
 //Inside of the function I created the parametar which will be reciving the data form arguments insde calling this constructor function. This parametar will have the input data as JSON format
@@ -118,6 +120,8 @@ User.prototype.login = function(){
   usersCollection.findOne({username: this.data.username}).then((attemptedUser)=>{
     //Here I check if the user is imput the same username as it exists in the db and I also use bycrypt compareSync method to compare password in db which is now hashed and the inputed value which will this method hashed with the same salt keys and the passwords will metch if the user is inputet the same password
     if(attemptedUser && bcrypt.compareSync(this.data.password, attemptedUser.password)){
+      this.data = attemptedUser;
+      this.getAvatar();
       //Calling the callback function
       resolve("Congrats!!")
    }else{
@@ -147,12 +151,20 @@ User.prototype.register = function(){
        this.data.password = bcrypt.hashSync(this.data.password, salt);
        //insert into db 
          await usersCollection.insertOne(this.data);
+         this.getAvatar();
          resolve();
      }else{
        reject(this.errors);
      }
   
   })
+}
+
+//Creating the new method for adding user picture form avatar
+
+User.prototype.getAvatar = function(){
+  //Creating the new proprety and adding the gravatar link
+  this.avatar = `https://gravatar.com/avatar/${md5(this.data.email)}?s=128`;
 }
 
 
