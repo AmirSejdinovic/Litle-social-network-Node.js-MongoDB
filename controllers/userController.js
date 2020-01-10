@@ -43,21 +43,24 @@ exports.register = function(req, res){
     //In the calling the new User i pased the argument of the req.body. This line of code will pass the input of the user as json file. We enabled this inside the app.js
     let user = new User(req.body);
     //Whith this we call method on new instace of user. Method is stored as prototype in the app.js
-    user.register();
-    if(user.errors.length){
-         //Creating the forEach for flash messages
-        user.errors.forEach(function(error){
-            //Calling the model for flash mesages
-         req.flash('regErrors', error);
-        });
-        //Calling the method save and putin inside of it the callback function
+    user.register().then(()=>{
+        req.session.user = {username: user.data.username}
         req.session.save(function(){
             res.redirect('/');
         })
-          
-    }else{
-       res.send("Congrats, there are no errors");
-    }
+       
+    }).catch((regErrors)=>{
+       //Creating the forEach for flash messages
+       regErrors.forEach(function(error){
+        //Calling the model for flash mesages
+     req.flash('regErrors', error);
+    });
+    //Calling the method save and putin inside of it the callback function
+    req.session.save(function(){
+        res.redirect('/');
+    })
+    });
+    
 }
 //This function will be called when someone visits base url
 exports.home= function(req,res){

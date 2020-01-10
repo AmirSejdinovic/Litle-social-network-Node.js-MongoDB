@@ -41,63 +41,70 @@ User.prototype.cleanUp = function(){
   }
 }
 //Creating the validate method
-User.prototype.validate = async function(){
-  //If the data from the username is empty do this
-   if(this.data.username == ""){
-     //If the username is empty than push this text inside the errors porptey that i defined above
-      this.errors.push("You must provide username");
-
+User.prototype.validate = function(){
+  //Creating the promise and adding it the asyin function
+  return new Promise(async (resolve, reject)=>{
+    //If the data from the username is empty do this
+     if(this.data.username == ""){
+       //If the username is empty than push this text inside the errors porptey that i defined above
+        this.errors.push("You must provide username");
+  
+     }
+     //If the user type something in the usrenmane filed than valdiate that input value
+     //With the validators method of isAlphanumeric we can chack if the input valie is aplphanumeric
+     if(this.data.username != "" && !validator.isAlphanumeric(this.data.username)){
+       this.errors.push("Username can only containe letters and numbers");
+  
+     }
+     //Calling the validator in the if statement. In the argument of the isEmail method we type the code for the input filed value If the email is valid the code will not run 
+     if(!validator.isEmail(this.data.email)){
+      
+       this.errors.push("You must provide a valid  email");
+       
+    }
+    if(this.data.password == ""){
+      //If the username is empty than push this text inside the errors porptey that i defined above
+       this.errors.push("You must provide a password");
+       
+    }
+    //If statement for cheking if the user is inputed the password is more than 12 caharaters long
+    if(this.data.password.length > 0 && this.data.password.length < 12){
+      this.errors.push("Password must bee at least 12 cahraterst")
+    }
+    //Whit this I checked that the password is not lenght more than 100 charachers
+    if(this.data.password.length > 50){
+       this.errors.push("Password canot  exceed 50 characters");
+    }
+    //Cheking the usrename cahracters
+    if(this.data.username.length > 0 && this.data.username.length < 3){
+      this.errors.push("Usrename must be more than 3 charahers long");
+    }
+    //cheking the usrnema
+    if(this.data.username.length > 30){
+      this.errors.push("The usrname could not be more than 30 characthers");
+    }
+  
+    //Only if username is valid then check to see if its alredy taken
+    if(this.data.username.length > 2 && this.data.username.length < 31 && validator.isAlphanumeric(this.data.username)){
+       let usrnameExists = await usersCollection.findOne({username: this.data.username});
+       
+       if(usrnameExists){this.errors.push("That username is alerady taken")}
+    }
+  //Only if email is valid than check to see if its already taken
+    if(validator.isEmail(this.data.email)){
+      let emailExists = await usersCollection.findOne({email: this.data.email});
+      
+      if(emailExists){this.errors.push("That email is alerady being used")}
    }
-   //If the user type something in the usrenmane filed than valdiate that input value
-   //With the validators method of isAlphanumeric we can chack if the input valie is aplphanumeric
-   if(this.data.username != "" && !validator.isAlphanumeric(this.data.username)){
-     this.errors.push("Username can only containe letters and numbers");
-
-   }
-   //Calling the validator in the if statement. In the argument of the isEmail method we type the code for the input filed value If the email is valid the code will not run 
-   if(!validator.isEmail(this.data.email)){
-    
-     this.errors.push("You must provide a valid  email");
-     
-  }
-  if(this.data.password == ""){
-    //If the username is empty than push this text inside the errors porptey that i defined above
-     this.errors.push("You must provide a password");
-     
-  }
-  //If statement for cheking if the user is inputed the password is more than 12 caharaters long
-  if(this.data.password.length > 0 && this.data.password.length < 12){
-    this.errors.push("Password must bee at least 12 cahraterst")
-  }
-  //Whit this I checked that the password is not lenght more than 100 charachers
-  if(this.data.password.length > 50){
-     this.errors.push("Password canot  exceed 50 characters");
-  }
-  //Cheking the usrename cahracters
-  if(this.data.username.length > 0 && this.data.username.length < 3){
-    this.errors.push("Usrename must be more than 3 charahers long");
-  }
-  //cheking the usrnema
-  if(this.data.username.length > 30){
-    this.errors.push("The usrname could not be more than 30 characthers");
-  }
-
-  //Only if username is valid then check to see if its alredy taken
-  if(this.data.username.length > 2 && this.data.username.length < 31 && validator.isAlphanumeric(this.data.username)){
-     let usrnameExists = await usersCollection.findOne({username: this.data.username});
-     
-     if(usrnameExists){this.errors.push("That username is alerady taken")}
-  }
-//Only if email is valid than check to see if its already taken
-  if(validator.isEmail(this.data.email)){
-    let emailExists = await usersCollection.findOne({email: this.data.email});
-    
-    if(emailExists){this.errors.push("That email is alerady being used")}
- }
-
-
-
+    //Resolve
+   resolve()
+  
+  
+  
+  })
 }
+
+
 //Creating the login method on user instance. 
 //In the function I recive the parametar as callback. This callback function will be provided as argument inside the userControler.
 //Setup the promise insted of the callback
@@ -125,22 +132,29 @@ User.prototype.login = function(){
 }
 //With this way I created the method in User constructor. This way of creating methods is much better because if we created the metod on this way we do not have a copy instance of this metod for each new instance but all of that new instance of the constructor will have the acces to this method. With this form we as pototype of the user created method which wil be one and all of instance of thaht constructor function will have acees to him. If we created the method on the old way as the function inside the constructor function this will copy that method every time when this constructor will be called
 User.prototype.register = function(){
-  this.cleanUp();
-   //Step no1: Validate user data
-   //Caling the validate method. I created it above
-    this.validate();
-   //Step no2: Only if there are no validation errors then save the user data into database
-   //If there have no errors than do this
-   if(!this.errors.length){
-     //Hash user password using bcrpyt
-     //First I made the salt. Here I caling the bcrypt object and method genSaltSync inside the arguments I provide the nubmer of characters
-     let salt = bcrypt.genSaltSync(10);
-     //With this i update the user pasword and calling the bcrypt and method hashSyinc inisde of it i provide the inpudet user data and salt keys
-     this.data.password = bcrypt.hashSync(this.data.password, salt);
-     //insert into db 
-       usersCollection.insertOne(this.data);
-   }
-
+  return new Promise(async (resolve, reject) =>{
+    this.cleanUp();
+     //Step no1: Validate user data
+     //Caling the validate method. I created it above
+     await this.validate();
+     //Step no2: Only if there are no validation errors then save the user data into database
+     //If there have no errors than do this
+     if(!this.errors.length){
+       //Hash user password using bcrpyt
+       //First I made the salt. Here I caling the bcrypt object and method genSaltSync inside the arguments I provide the nubmer of characters
+       let salt = bcrypt.genSaltSync(10);
+       //With this i update the user pasword and calling the bcrypt and method hashSyinc inisde of it i provide the inpudet user data and salt keys
+       this.data.password = bcrypt.hashSync(this.data.password, salt);
+       //insert into db 
+         await usersCollection.insertOne(this.data);
+         resolve();
+     }else{
+       reject(this.errors);
+     }
+  
+  })
 }
+
+
 //Exports the function so I can use it in another file
 module.exports = User;
