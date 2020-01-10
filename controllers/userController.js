@@ -1,5 +1,17 @@
 //Importing the model of user
 const User = require('../models/User');
+//Creating the function for mustbe loggedi in this function I will use on router to the create post
+exports.mustBeLoggedIn = function(req,res, next){
+    //Here I check if the sessions have users data that means if the user is successufly loged in than if that is the case do the next fuction in the router and that is the function for the rendering the wiev
+   if(req.session.user){
+      next();
+   }else{
+     req.flash("errors", "You must be logged in to perform that action");
+     req.session.save(function(){
+         res.redirect('/');
+     })
+   }
+}
 //Function for login 
 exports.login = function(req,res){
     //Creating the new instance of the user and passing the input as argument
