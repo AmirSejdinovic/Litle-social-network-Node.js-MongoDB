@@ -21,6 +21,18 @@ exports.create = function(req,res){
     });
 }
 //Function for rendering the single post view
-exports.viewSingle = function(req,res){
-    res.render('single-post-screen');
+//Because our post model will return promise I will created the async function
+exports.viewSingle = async function(req,res){
+  //try and catch are the default blocks for async function
+    try{
+      //Creating the varaable and seting up to have the value of Post and method findSIngleBYid
+      //In the argument we aceess to the id of the post 
+      let post = await Post.findSingleById(req.params.id);
+
+      res.render('single-post-screen', {post: post});
+    }catch{
+
+      res.send("404 template will go here");
+
+    }
 }
