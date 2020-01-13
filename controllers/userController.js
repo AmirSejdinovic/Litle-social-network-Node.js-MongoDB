@@ -23,7 +23,7 @@ exports.login = function(req,res){
 
    user.login().then(function(result){
       //Calling session on req object and creatihg the user proprety whic have this object
-      req.session.user = {avatar: user.avatar, username: user.data.username}; 
+      req.session.user = {avatar: user.avatar, username: user.data.username, _id: user.data._id }; 
       //Creating the ssesion and save method inside this method we put the callback function and after the save method do its job this callback function will be trigered and all code inside of it will run. I put there the redirect method
       req.session.save(function(){
           //Redirect to the home url
@@ -56,7 +56,7 @@ exports.register = function(req, res){
     let user = new User(req.body);
     //Whith this we call method on new instace of user. Method is stored as prototype in the app.js
     user.register().then(()=>{
-        req.session.user = {username: user.data.username, avatar: user.avatar}
+        req.session.user = {username: user.data.username, avatar: user.avatar, _id: user.data._id}
         req.session.save(function(){
             res.redirect('/');
         })
