@@ -24,7 +24,10 @@ router.post('/logout', userController.logout);
 router.get('/create-post', userController.mustBeLoggedIn ,postController.viewCreateScreen);
 
 //Create post router for creating posts 
-router.post('/create-post', userController.mustBeLoggedIn, postController.create)
+router.post('/create-post', userController.mustBeLoggedIn, postController.create);
+
+//router for single
+router.get('/post/:id', postController.viewSingle);
 
 
 //Exportting the router which I will fetch in the app.js

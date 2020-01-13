@@ -20,3 +20,7 @@ exports.create = function(req,res){
          res.send(errors);
     });
 }
+//Function for rendering the single post view
+exports.viewSingle = function(req,res){
+    res.render('single-post-screen');
+}
