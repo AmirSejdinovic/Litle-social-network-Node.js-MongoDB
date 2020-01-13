@@ -23,6 +23,9 @@ router.post('/logout', userController.logout);
 //Here I include mutlitpe functios the frist funstion mustbelogedin will alow to render the view only to users which are logedin
 router.get('/create-post', userController.mustBeLoggedIn ,postController.viewCreateScreen);
 
+//Create post router for creating posts 
+router.post('/create-post', userController.mustBeLoggedIn, postController.create)
+
 
 //Exportting the router which I will fetch in the app.js
 module.exports = router;
