@@ -93,15 +93,26 @@ Post.findSingleById = function(id){
          return;
        }
 
-       let post = await postsCollection.findOne({_id: new ObjectID(id)});
+       let posts = await postsCollection.aggregate([
+         {$match: {_id: new ObjectID(id)}},
+         {$lookup: {from: "users", localField: "author", foreignField: "_id", as: "authorDocument"}},
+         {$project: {
+           title: 1,
+           body: 1,
+           createdDate: 1,
+           author: {$arrayElemAt: ["$authorDocument", 0]}
+         }}
+       ]).toArray()
        
-       if(post){
-          resovle(post); 
+       if(posts.length){
+         console.log(posts[0]);
+          resovle(posts[0]); 
        }else{
             reject();
        }
    })
 }
+
 
 //Exporting the Post constructor
 module.exports = Post;
