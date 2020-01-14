@@ -10,10 +10,20 @@ const md5 = require("md5");
 
 //Crating the construct which will be a bluebprint
 //Inside of the function I created the parametar which will be reciving the data form arguments insde calling this constructor function. This parametar will have the input data as JSON format
-let User = function(data){
+let User = function(data, getAvatar){
    //Whit tihs we taking the data tha was pased in as argument in callin function and storing it with proprety
   this.data = data;
   this.errors = [];
+  //If there are no gravatar
+  if(getAvatar == undefined){
+    //If avatar is not set than update getAvatar variable and set it to false
+    getAvatar = false;
+  }
+  //If there is a value in avatar than call the method
+  if(getAvatar){
+    //Calling the method
+    this.getAvatar()
+  }
    
 }
 //Creating the clean up method

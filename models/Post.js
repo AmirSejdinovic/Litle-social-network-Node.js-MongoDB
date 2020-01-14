@@ -3,6 +3,8 @@
 const postsCollection = require('../db').db().collection("posts");
 //Importing the object id
 const ObjectID = require('mongodb').ObjectID;
+//Importing the user model
+const User = require('./User');
 
 //This is the consturctor
 //In the function as parametar we recive the inputed value because we put in the calling of this object res.body which has the all inputed vale. Here I recive it and I give it a name data. Innside the data variable I will have te users inputed data
@@ -103,6 +105,15 @@ Post.findSingleById = function(id){
            author: {$arrayElemAt: ["$authorDocument", 0]}
          }}
        ]).toArray()
+
+       //Clean up the author prpoperty in each post object
+       posts = posts.map(function(post){
+         post.author = {
+           username: post.author.username,
+           avatar: new User(post.author, true).avatar
+         }
+        return post;
+       })
        
        if(posts.length){
          console.log(posts[0]);
