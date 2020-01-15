@@ -88,6 +88,38 @@ Post.prototype.create = function(){
 
 }
 
+
+Post.reusablePostQuery= function(uniqueOperations){
+  return new Promise(async function(resovle, reject){
+      
+      let aggOperations = uniqueOperations.concat(
+        [
+        
+          {$lookup: {from: "users", localField: "author", foreignField: "_id", as: "authorDocument"}},
+          {$project: {
+            title: 1,
+            body: 1,
+            createdDate: 1,
+            author: {$arrayElemAt: ["$authorDocument", 0]}
+          }}
+        ]
+      );
+      let posts = await postsCollection.aggregate(aggOperations).toArray()
+
+      //Clean up the author prpoperty in each post object
+      posts = posts.map(function(post){
+        post.author = {
+          username: post.author.username,
+          avatar: new User(post.author, true).avatar
+        }
+       return post;
+      })
+      
+      resovle(posts);
+  })
+}
+
+
 Post.findSingleById = function(id){
    return new Promise(async function(resovle, reject){
        if(typeof(id) != "string" || !ObjectID.isValid(id)){
@@ -95,25 +127,9 @@ Post.findSingleById = function(id){
          return;
        }
 
-       let posts = await postsCollection.aggregate([
-         {$match: {_id: new ObjectID(id)}},
-         {$lookup: {from: "users", localField: "author", foreignField: "_id", as: "authorDocument"}},
-         {$project: {
-           title: 1,
-           body: 1,
-           createdDate: 1,
-           author: {$arrayElemAt: ["$authorDocument", 0]}
-         }}
-       ]).toArray()
-
-       //Clean up the author prpoperty in each post object
-       posts = posts.map(function(post){
-         post.author = {
-           username: post.author.username,
-           avatar: new User(post.author, true).avatar
-         }
-        return post;
-       })
+       let posts = await Post.reusablePostQuery([
+         {$match: {_id: new ObjectID(id)}}
+       ]);
        
        if(posts.length){
          console.log(posts[0]);
@@ -122,6 +138,13 @@ Post.findSingleById = function(id){
             reject();
        }
    })
+}
+
+Post.findByAuthorId = function(authorId){
+   return Post.reusablePostQuery([
+      {$match: {author: authorId}},
+      {$sort: {createdDate: -1}}
+   ]);
 }
 
 

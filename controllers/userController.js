@@ -1,5 +1,7 @@
 //Importing the model of user
 const User = require('../models/User');
+//Importing the post model
+const Post = require('../models/Post');
 //Creating the function for mustbe loggedi in this function I will use on router to the create post
 exports.mustBeLoggedIn = function(req,res, next){
     //Here I check if the sessions have users data that means if the user is successufly loged in than if that is the case do the next fuction in the router and that is the function for the rendering the wiev
@@ -97,9 +99,17 @@ exports.ifUserExists = function(req,res,next){
 }
 
 exports.profilePostsScreen = function(req,res){
-  res.render('profile', {
-      profileUsername: req.profileUser.username,
-      profileAvatar: req.profileUser.avatar
-  }); 
+ 
+ //Ask our post model for posts by a certain author id
+ Post.findByAuthorId(req.profileUser._id).then(function(posts){
+    res.render('profile', {
+        posts: posts,
+        profileUsername: req.profileUser.username,
+        profileAvatar: req.profileUser.avatar
+    }); 
+ }).catch(function(){
+    res.render("404"); 
+ });
+  
 }
 
