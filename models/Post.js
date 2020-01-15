@@ -9,12 +9,13 @@ const User = require('./User');
 //This is the consturctor
 //In the function as parametar we recive the inputed value because we put in the calling of this object res.body which has the all inputed vale. Here I recive it and I give it a name data. Innside the data variable I will have te users inputed data
 //Fatching the userID in the parametar from session
-let Post = function(data, userId){
+let Post = function(data, userId, requestedPostId){
   //Here I storing the inpuded value as data in proprati data which I have to access all araound the object and its prototype methods
   this.data = data;
   //Here I created errors array in which I will push any errors if there been
   this.errors = [],
-  this.userId = userId;
+  this.userId = userId
+  this.requestedPostId = requestedPostId
 }
 //Creating method for clenaup
 Post.prototype.cleanUp = function(){
@@ -86,6 +87,40 @@ Post.prototype.create = function(){
     }
   });
 
+}
+
+Post.prototype.update = function(){
+
+  //Creating the promise because our calling action of this method expects the promise
+  return new Promise(async (resolve, reject)=>{
+      try{
+        let post = await Post.findSingleById(this.requestedPostId, this.userId);
+        //if
+        if(post.isVisitorOwner){
+          //Actually update the db
+          let status = await this.actuallyUpdate();
+          resolve(status);
+        }else{
+           reject();
+        }
+
+      }catch{
+        reject()
+      }
+  })
+}
+
+Post.prototype.actuallyUpdate = function(){
+   return new Promise(async (resolve, reject)=>{
+     this.cleanUp();
+     this.validate();
+     if(!this.errors.length){
+      await postsCollection.findOneAndUpdate({_id: new ObjectID(this.requestedPostId)}, {$set: {title: this.data.title, body: this.data.body}});
+      resolve("success");
+     }else{
+       resolve("failure");
+     }
+   })
 }
 
 

@@ -35,6 +35,10 @@ app.use(flash());
 
 //Creating the midlewere function which will provide us a sessions
 app.use(function(req,res,next){
+
+  //Make all error and succes flash messages avaiable from all tmmpaltes
+  res.locals.errors = req.flash("errors");
+  res.locals.success = req.flash("success");
   //Make current user id available on the req object
   if(req.session.user){
      req.visitorId = req.session.user._id
