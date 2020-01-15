@@ -36,3 +36,13 @@ exports.viewSingle = async function(req,res){
 
     }
 }
+
+exports.viewEditScreen = async function(req,res){
+  try{
+    let post = await Post.findSingleById(req.params.id);
+    res.render("edit-post", {post: post});
+  }
+  catch{
+    res.render("404");
+  }
+}
