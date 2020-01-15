@@ -27,7 +27,7 @@ exports.viewSingle = async function(req,res){
     try{
       //Creating the varaable and seting up to have the value of Post and method findSIngleBYid
       //In the argument we aceess to the id of the post 
-      let post = await Post.findSingleById(req.params.id);
+      let post = await Post.findSingleById(req.params.id, req.visitorId);
 
       res.render('single-post-screen', {post: post});
     }catch{

@@ -35,6 +35,13 @@ app.use(flash());
 
 //Creating the midlewere function which will provide us a sessions
 app.use(function(req,res,next){
+  //Make current user id available on the req object
+  if(req.session.user){
+     req.visitorId = req.session.user._id
+  }else{
+    req.visitorId = 0;
+  }
+  //Make user session data available form within wiev temapalte
   res.locals.user = req.session.user;
   next();
 })
