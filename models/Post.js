@@ -5,6 +5,8 @@ const postsCollection = require('../db').db().collection("posts");
 const ObjectID = require('mongodb').ObjectID;
 //Importing the user model
 const User = require('./User');
+const sanitizeHTML = require('sanitize-html');
+
 
 //This is the consturctor
 //In the function as parametar we recive the inputed value because we put in the calling of this object res.body which has the all inputed vale. Here I recive it and I give it a name data. Innside the data variable I will have te users inputed data
@@ -32,9 +34,10 @@ Post.prototype.cleanUp = function(){
     //Get rid of any bofus properties
     //Here I update data nad put what values it can have. If the user try to send the any bogus value whic is not any of this i specify than it will not pase it
     //Here i run the trim method for cleaning up the any empty spaces in inputs
+
     this.data = {
-      title: this.data.title,
-      body: this.data.body,
+      title: sanitizeHTML(this.data.title, {allowedTags: [], allowedAttributes: {}}),
+      body: sanitizeHTML(this.data.body, {allowedTags: [], allowedAttributes: {}}),
       createdDate: new Date(),
       author: ObjectID(this.userId)
     }

@@ -6,6 +6,9 @@ const session = require('express-session');
 const MongoStore = require('connect-mongo')(session);
 //Importing the npm flash connect package and storing it in the constant
 const flash = require('connect-flash');
+//Importing marked package
+const markdown = require('marked');
+const sanitizeHTML = require('sanitize-html');
 
 
 
@@ -35,6 +38,11 @@ app.use(flash());
 
 //Creating the midlewere function which will provide us a sessions
 app.use(function(req,res,next){
+
+  //make our markdonw function avaible form ejs templates
+  res.locals.filterUserHTML = function(content){
+    return sanitizeHTML(markdown(content), {allowedTags: ['p', 'br', 'ul', 'ol', 'li', 'strong', 'i','em','h1','h2','h3','h4','h5','h6'], allowedAttributes: {}});
+  }
 
   //Make all error and succes flash messages avaiable from all tmmpaltes
   res.locals.errors = req.flash("errors");
