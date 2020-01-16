@@ -13,11 +13,16 @@ exports.create = function(req,res){
     //Calling the method of Post object
     //This method will return the promise. The promise return resolve or rjecete
     //Because it returns the promise I after the calling the method chanin the .then() and .catch()
-    post.create().then(function(){
-        res.send("New Post created");
+    post.create().then(function(newId){
+        
+      req.flash("success", "New post successufully created.");
+      req.session.save(()=> {
+        res.redirect(`/post/${newId}`);
+      });
         
     }).catch(function(errors){
-         res.send(errors);
+       errors.forEach(error => req.flash("errors", error));
+       req.session.save(()=> res.redirect("/create-post"));
     });
 }
 //Function for rendering the single post view
@@ -40,7 +45,12 @@ exports.viewSingle = async function(req,res){
 exports.viewEditScreen = async function(req,res){
   try{
     let post = await Post.findSingleById(req.params.id);
-    res.render("edit-post", {post: post});
+    if(post.authorId == req.visitorId ){
+      res.render("edit-post", {post: post});
+    }else{
+      req.flash("errors", "You do not have permission to perform that action");
+      req.session.save(()=> res.redirect("/"))
+    }
   }
   catch{
     res.render("404");

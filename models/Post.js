@@ -13,9 +13,9 @@ let Post = function(data, userId, requestedPostId){
   //Here I storing the inpuded value as data in proprati data which I have to access all araound the object and its prototype methods
   this.data = data;
   //Here I created errors array in which I will push any errors if there been
-  this.errors = [],
-  this.userId = userId
-  this.requestedPostId = requestedPostId
+  this.errors = [];
+  this.userId = userId;
+  this.requestedPostId = requestedPostId;
 }
 //Creating method for clenaup
 Post.prototype.cleanUp = function(){
@@ -71,9 +71,9 @@ Post.prototype.create = function(){
     if(!this.errors.length){
        //Storing post in the database
        //Calling the moethod inserOone and passing the object of this.data
-       postsCollection.insertOne(this.data).then(()=>{
-         console.log(this.data);
-         resovle();
+       postsCollection.insertOne(this.data).then((info)=>{
+         
+         resovle(info.ops[0]._id);
        }).cetch(()=>{
           this.errors.push("Please try again later");
           reject(this.errors);
