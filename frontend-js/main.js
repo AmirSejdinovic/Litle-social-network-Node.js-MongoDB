@@ -1,4 +1,4 @@
 //Importing the search module from modules file
 import Search from './modules/search';
-//Creating new instance of Search 
+//Creating new instance of Search class
 new Search();
