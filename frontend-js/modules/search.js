@@ -74,8 +74,8 @@ export default class Search{
   sendRequest(){
     //Calling the axios and adding the post method inside this method i provide the first the url than the second parametar is the value which will bee send via this request in my case it is the current value of input field
     //Because axios is return the promes i added then and catch method
-    axios.post('/search', {searchTerm: this.inputField.value}).then(()=>{
-
+    axios.post('/search', {searchTerm: this.inputField.value}).then(response=>{
+        console.log(response.data);
     }).catch(()=>{
        alert("Hello the reuqest failed");
     });

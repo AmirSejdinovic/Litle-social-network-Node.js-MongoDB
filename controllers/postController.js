@@ -100,3 +100,14 @@ exports.delete = function(req,res){
      });
   })
 }
+//Creating the function which will hendl the search 
+exports.search = function(req,res){
+  //Calling the search method from Post model
+  //As the argument I provide the input value which is sotred in the axios req with parametar of searchTerm
+   Post.search(req.body.searchTerm).then(posts=>{
+     //resposne posts in the json format
+       res.json(posts)
+   }).catch(()=>{
+       res.json([]);
+   });
+}

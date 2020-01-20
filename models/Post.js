@@ -148,6 +148,7 @@ Post.reusablePostQuery= function(uniqueOperations,visitorId){
       //Clean up the author prpoperty in each post object
       posts = posts.map(function(post){
         post.isVisitorOwner = post.authorId.equals(visitorId);
+        post.authorId = undefined;
         post.author = {
           username: post.author.username,
           avatar: new User(post.author, true).avatar
@@ -204,6 +205,24 @@ Post.delete = function(postIdToDelete, currentUserId){
   })
 }
 
-
+//Creating the search method
+Post.search = function(searchTerm) {
+  //Return the promise and it will be async function
+   return new Promise(async (resovle,reject)=>{
+     //Only if the type of input string do the code belove
+       if(typeof(searchTerm) == "string"){
+         //store in the variable the return of the method called reusablePostQuery
+          let posts = await Post.reusablePostQuery([
+            {$match: {$text: {$search: searchTerm}}
+          },
+          {$sort: {score: {$meta: "textScore"}}}
+          ]);  
+          resolve(posts); 
+       }else{
+         //If the input is not the string than reject 
+          reject();
+       }
+   });
+}
 //Exporting the Post constructor
 module.exports = Post;
