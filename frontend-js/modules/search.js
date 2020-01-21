@@ -69,7 +69,7 @@ export default class Search{
        this.typingWaitTimer = setTimeout(()=>{
          //Calling the method sencRequest
           this.sendRequest();
-       },3000);
+       },750);
 
     }
 
@@ -95,24 +95,18 @@ export default class Search{
       if(posts.length){
         this.resulrsArea.innerHTML = `
         <div class="list-group shadow-sm">
-            <div class="list-group-item active"><strong>Search Results</strong> (4 items found)</div>
-
-            <a href="#" class="list-group-item list-group-item-action">
-              <img class="avatar-tiny" src="https://gravatar.com/avatar/b9216295c1e3931655bae6574ac0e4c2?s=128"> <strong>Example Post #1</strong>
-              <span class="text-muted small">by barksalot on 0/14/2019</span>
+            <div class="list-group-item active"><strong>Search Results</strong> (${posts.length > 1 ? `${posts.length} items found` : '1 item found'} )</div>
+           ${posts.map(post=>{
+             let postDate = new Date(post.createdDate);
+            
+            return `
+             <a href="/post/${post._id}" class="list-group-item list-group-item-action">
+              <img class="avatar-tiny" src="${post.author.avatar}"> <strong>${post.title}</strong>
+              <span class="text-muted small">by ${post.author.username} on ${postDate.getMonth()}/${postDate.getDate()}/${postDate.getFullYear()}</span>
             </a>
-            <a href="#" class="list-group-item list-group-item-action">
-              <img class="avatar-tiny" src="https://gravatar.com/avatar/b9408a09298632b5151200f3449434ef?s=128"> <strong>Example Post #2</strong>
-              <span class="text-muted small">by brad on 0/12/2019</span>
-            </a>
-            <a href="#" class="list-group-item list-group-item-action">
-              <img class="avatar-tiny" src="https://gravatar.com/avatar/b9216295c1e3931655bae6574ac0e4c2?s=128"> <strong>Example Post #3</strong>
-              <span class="text-muted small">by barksalot on 0/14/2019</span>
-            </a>
-            <a href="#" class="list-group-item list-group-item-action">
-              <img class="avatar-tiny" src="https://gravatar.com/avatar/b9408a09298632b5151200f3449434ef?s=128"> <strong>Example Post #4</strong>
-              <span class="text-muted small">by brad on 0/12/2019</span>
-            </a>
+             
+             `
+           }).join('')}
           </div>
         
         `;
