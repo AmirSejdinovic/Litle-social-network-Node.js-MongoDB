@@ -1,5 +1,7 @@
 //Importing the axios package
 import axios from 'axios';
+//Importing the dompurify
+import DOMPurify from 'dompurify';
 
 //JS class new sintax because it I use babel to render this code on valid JS for all type of browsers
 export default class Search{
@@ -93,7 +95,7 @@ export default class Search{
   renderResultsHTML(posts){
     //If the array have any items than do the code block
       if(posts.length){
-        this.resulrsArea.innerHTML = `
+        this.resulrsArea.innerHTML = DOMPurify.sanitize(`
         <div class="list-group shadow-sm">
             <div class="list-group-item active"><strong>Search Results</strong> (${posts.length > 1 ? `${posts.length} items found` : '1 item found'} )</div>
            ${posts.map(post=>{
@@ -109,7 +111,7 @@ export default class Search{
            }).join('')}
           </div>
         
-        `;
+        `);
       }else{
         this.resulrsArea.innerHTML = `
         <p class="alert alert-danger text-center shadow-sm">Sorry, we could not find any results for that search. </p>
