@@ -53,12 +53,19 @@ export default class Search{
     //Creating the variable value and asiginig it the current value of input field
     let value = this.inputField.value;
 
+    if(value == ""){
+      clearTimeout(this.typingWaitTimer);
+      this.hideLoaderIcon();
+      this.hideResultsArea();
+    }
+
     //If the value is not empy and is not empy string etc previus value, than do this code
     if(value != "" && value != this.previusValue){
       //Reseting timer
       clearTimeout(this.typingWaitTimer);
       //Calling the showloader icon method
        this.showLoaderIcon();
+       this.hideResultsArea();
        this.typingWaitTimer = setTimeout(()=>{
          //Calling the method sencRequest
           this.sendRequest();
@@ -76,12 +83,73 @@ export default class Search{
     //Because axios is return the promes i added then and catch method
     axios.post('/search', {searchTerm: this.inputField.value}).then(response=>{
         console.log(response.data);
+        //Calling the method
+        this.renderResultsHTML(response.data);
     }).catch(()=>{
        alert("Hello the reuqest failed");
     });
   }
+  //Creating the method
+  renderResultsHTML(posts){
+    //If the array have any items than do the code block
+      if(posts.length){
+        this.resulrsArea.innerHTML = `
+        <div class="list-group shadow-sm">
+            <div class="list-group-item active"><strong>Search Results</strong> (4 items found)</div>
+
+            <a href="#" class="list-group-item list-group-item-action">
+              <img class="avatar-tiny" src="https://gravatar.com/avatar/b9216295c1e3931655bae6574ac0e4c2?s=128"> <strong>Example Post #1</strong>
+              <span class="text-muted small">by barksalot on 0/14/2019</span>
+            </a>
+            <a href="#" class="list-group-item list-group-item-action">
+              <img class="avatar-tiny" src="https://gravatar.com/avatar/b9408a09298632b5151200f3449434ef?s=128"> <strong>Example Post #2</strong>
+              <span class="text-muted small">by brad on 0/12/2019</span>
+            </a>
+            <a href="#" class="list-group-item list-group-item-action">
+              <img class="avatar-tiny" src="https://gravatar.com/avatar/b9216295c1e3931655bae6574ac0e4c2?s=128"> <strong>Example Post #3</strong>
+              <span class="text-muted small">by barksalot on 0/14/2019</span>
+            </a>
+            <a href="#" class="list-group-item list-group-item-action">
+              <img class="avatar-tiny" src="https://gravatar.com/avatar/b9408a09298632b5151200f3449434ef?s=128"> <strong>Example Post #4</strong>
+              <span class="text-muted small">by brad on 0/12/2019</span>
+            </a>
+          </div>
+        
+        `;
+      }else{
+        this.resulrsArea.innerHTML = `
+        <p class="alert alert-danger text-center shadow-sm">Sorry, we could not find any results for that search. </p>
+        
+        `;
+      }
+
+      //Hiding spin loader
+      //Calling the method
+      this.hideLoaderIcon();
+
+      //Show result area
+      //Calling the method
+      this.showResultsArea();
+  }
+
+
   //Creating the show loader method
   showLoaderIcon(){
+    this.loaderIcon.classList.remove("circle-loader--visible");
+  }
+
+  showResultsArea(){
+    this.resulrsArea.classList.add("live-search-results--visible");
+  }
+
+  hideResultsArea(){
+    this.resulrsArea.classList.remove("live-search-results--visible");
+  }
+
+
+
+  //Creating the show loader method
+  hideLoaderIcon(){
     this.loaderIcon.classList.add("circle-loader--visible");
   }
   //Creating method inside the class. This method will calle above in the eventlistener and this method will open the overlay for search 
@@ -117,26 +185,7 @@ export default class Search{
       <div class="container container--narrow py-3">
         <div class="circle-loader"></div>
         <div class="live-search-results">
-          <div class="list-group shadow-sm">
-            <div class="list-group-item active"><strong>Search Results</strong> (4 items found)</div>
-
-            <a href="#" class="list-group-item list-group-item-action">
-              <img class="avatar-tiny" src="https://gravatar.com/avatar/b9216295c1e3931655bae6574ac0e4c2?s=128"> <strong>Example Post #1</strong>
-              <span class="text-muted small">by barksalot on 0/14/2019</span>
-            </a>
-            <a href="#" class="list-group-item list-group-item-action">
-              <img class="avatar-tiny" src="https://gravatar.com/avatar/b9408a09298632b5151200f3449434ef?s=128"> <strong>Example Post #2</strong>
-              <span class="text-muted small">by brad on 0/12/2019</span>
-            </a>
-            <a href="#" class="list-group-item list-group-item-action">
-              <img class="avatar-tiny" src="https://gravatar.com/avatar/b9216295c1e3931655bae6574ac0e4c2?s=128"> <strong>Example Post #3</strong>
-              <span class="text-muted small">by barksalot on 0/14/2019</span>
-            </a>
-            <a href="#" class="list-group-item list-group-item-action">
-              <img class="avatar-tiny" src="https://gravatar.com/avatar/b9408a09298632b5151200f3449434ef?s=128"> <strong>Example Post #4</strong>
-              <span class="text-muted small">by brad on 0/12/2019</span>
-            </a>
-          </div>
+          
         </div>
       </div>
     </div>
