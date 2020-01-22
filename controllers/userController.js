@@ -2,6 +2,18 @@
 const User = require('../models/User');
 //Importing the post model
 const Post = require('../models/Post');
+const Follow = require('../models/Follow');
+
+exports.sharedProfileData = async function(req,res, next){
+   let isFollowing = false;
+
+   if(req.session.user){
+     isFollowing =  await Follow.isVisitorFollowing(req.profileUser._id, req.visitorId);
+   }
+
+   req.isFollowing = isFollowing;
+   next();
+}
 //Creating the function for mustbe loggedi in this function I will use on router to the create post
 exports.mustBeLoggedIn = function(req,res, next){
     //Here I check if the sessions have users data that means if the user is successufly loged in than if that is the case do the next fuction in the router and that is the function for the rendering the wiev
@@ -105,7 +117,8 @@ exports.profilePostsScreen = function(req,res){
     res.render('profile', {
         posts: posts,
         profileUsername: req.profileUser.username,
-        profileAvatar: req.profileUser.avatar
+        profileAvatar: req.profileUser.avatar,
+        isFollowing: req.isFollowing
     }); 
  }).catch(function(){
     res.render("404"); 

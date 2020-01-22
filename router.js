@@ -37,7 +37,7 @@ router.post('/post/:id/delete', userController.mustBeLoggedIn , postController.d
 router.post('/search', postController.search);
 
 //PROFILE RELATED ROUTES
-router.get('/profile/:username', userController.ifUserExists, userController.profilePostsScreen);
+router.get('/profile/:username', userController.ifUserExists, userController.sharedProfileData ,userController.profilePostsScreen);
 
 //Follow related routs
 router.post('/addFollow/:username', userController.mustBeLoggedIn ,followController.addFollow );
