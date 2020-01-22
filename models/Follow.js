@@ -26,7 +26,7 @@ Follow.prototype.cleanUp = function(){
 
 }
 //Creating validate function
-Follow.prototype.validate = async function(){
+Follow.prototype.validate = async function(action){
 
   //FollowedUsername must exists in database
   //Mongodb find one will return the promise
@@ -39,6 +39,24 @@ Follow.prototype.validate = async function(){
     //If we do not find account whic is sotred in collections users push the item in the errors aray
     this.errors.push("You cannot follow a user that dose not exist");
   }
+  let doesFollowAlreadyExist = await followsCollection.findOne({followedId: this.followedId, authorId: new ObjectId(this.authorId)});
+
+  if(action == "create"){
+    if(doesFollowAlreadyExist){
+      this.errors.push("You are alredy follow this user")
+    }
+  }
+
+  if(action == "delete"){
+    if(!doesFollowAlreadyExist){
+      this.errors.push("You cannot sto followin someone you do not already follow");
+    }
+  }
+
+  //Should not be able to follow yourself
+  if(this.followedId.equals(this.authorId)){
+     this.errors.push("You cannot follow yourself");
+  }
 }
 //Creating the metod for Follow class
 //This method will return the promise
@@ -49,7 +67,7 @@ Follow.prototype.create = function(){
     //Caling the method cleanUp
     this.cleanUp();
     //Caling the method validate
-    await this.validate();
+    await this.validate("create");
     //if there are some items in erros array this will validate to trouth but I put the ! sign which means tahat is oposite this now means if there are not any items in errors array do this cod in if block
     if(!this.errors.length){
        //Storing in database
@@ -63,6 +81,29 @@ Follow.prototype.create = function(){
 
   });
 }
+
+Follow.prototype.delete = function(){
+
+  //Return the promise
+  return new Promise(async (resolve,reject)=>{
+    //Caling the method cleanUp
+    this.cleanUp();
+    //Caling the method validate
+    await this.validate("delete");
+    //if there are some items in erros array this will validate to trouth but I put the ! sign which means tahat is oposite this now means if there are not any items in errors array do this cod in if block
+    if(!this.errors.length){
+       //Storing in database
+       await followsCollection.deleteOne({followedId: this.followedId, authorId: new ObjectId(this.authorId) }); 
+       resolve();
+    }else{
+       //If there are arrros reject
+       reject(this.errors);
+    }
+
+
+  });
+}
+
 
 Follow.isVisitorFollowing = async function(followedId, visitorId){
    let followDoc = await followsCollection.findOne({followedId: followedId, authorId: new ObjectId(visitorId)});

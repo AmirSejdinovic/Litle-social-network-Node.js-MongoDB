@@ -5,12 +5,14 @@ const Post = require('../models/Post');
 const Follow = require('../models/Follow');
 
 exports.sharedProfileData = async function(req,res, next){
+    let isVisitorsProfile = false;
    let isFollowing = false;
 
    if(req.session.user){
+       isVisitorsProfile = req.profileUser._id.equals(req.session.user._id);
      isFollowing =  await Follow.isVisitorFollowing(req.profileUser._id, req.visitorId);
    }
-
+   req.isVisitorsProfile = isVisitorsProfile;
    req.isFollowing = isFollowing;
    next();
 }
