@@ -38,6 +38,8 @@ router.post('/search', postController.search);
 
 //PROFILE RELATED ROUTES
 router.get('/profile/:username', userController.ifUserExists, userController.sharedProfileData ,userController.profilePostsScreen);
+router.get('/profile/:username/followers', userController.ifUserExists, userController.sharedProfileData ,userController.profileFollowersScreen);
+
 
 //Follow related routs
 router.post('/addFollow/:username', userController.mustBeLoggedIn ,followController.addFollow );
