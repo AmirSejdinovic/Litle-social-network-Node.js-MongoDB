@@ -14,6 +14,18 @@ exports.sharedProfileData = async function(req,res, next){
    }
    req.isVisitorsProfile = isVisitorsProfile;
    req.isFollowing = isFollowing;
+   //retirve post, follower and followinf counts
+   let postCountPromise =  Post.countPostsByAuthor(req.profileUser._id);
+   let followerCountPromise =  Follow.countFollowersById(req.profileUser._id);
+   let followingCountPromise =  Follow.countFollowingById(req.profileUser._id);
+
+   let [postCount, followerCoutn, followingCount] = await Promise.all([postCountPromise, followerCountPromise, followingCountPromise]);
+
+   req.postCount = postCount;
+   req.follwerCount = followerCoutn;
+   req.followingCount = followingCount;
+
+   
    next();
 }
 //Creating the function for mustbe loggedi in this function I will use on router to the create post
@@ -121,7 +133,8 @@ exports.profilePostsScreen = function(req,res){
         posts: posts,
         profileUsername: req.profileUser.username,
         profileAvatar: req.profileUser.avatar,
-        isFollowing: req.isFollowing
+        isFollowing: req.isFollowing,
+        counts: {postCount: req.postCount, followerCount: req.followindCount},
     }); 
  }).catch(function(){
     res.render("404"); 

@@ -224,5 +224,12 @@ Post.search = function(searchTerm) {
        }
    });
 }
+
+Post.countPostsByAuthor = function (id){
+    return new Promise(async (resolve, reject)=>{
+       let postCount = await postsCollection.countDocuments({author: id});
+       resolve(postCount);
+    });
+}
 //Exporting the Post constructor
 module.exports = Post;
