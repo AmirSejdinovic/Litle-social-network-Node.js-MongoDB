@@ -1,6 +1,7 @@
 //Importing the db connection
 //And this whill create the posts table in the database
 const postsCollection = require('../db').db().collection("posts");
+const followsCollection = require('../db').db().collection("follows");
 //Importing the object id
 const ObjectID = require('mongodb').ObjectID;
 //Importing the user model
@@ -230,6 +231,21 @@ Post.countPostsByAuthor = function (id){
        let postCount = await postsCollection.countDocuments({author: id});
        resolve(postCount);
     });
+}
+
+Post.getFeed = async function(id){
+   //create an array of the user ids thet current user follows
+   let followedUsers = await followsCollection.find({authorId: new ObjectID(id)}).toArray();
+   followedUsers = followedUsers.map(function(followDoc){
+     return followedUsers.follwedId;
+   });
+   //Look for posts where the authro is in the above array of followed users
+   return Post.reusablePostQuery([
+     {$match: {author: {$in: followedUsers}}},
+     {$sort: {createdDate: -1}}
+   ])
+
+
 }
 //Exporting the Post constructor
 module.exports = Post;
