@@ -72,6 +72,15 @@ app.set('views', 'views');
 app.set('view engine', 'ejs');
 //Here I call method of use and pased two arguments first is the url for which I will use the router and the second is the variable which contains router cll
 app.use('/',router);
+
+const server = require('http').createServer(app);
+
+const io = require('socket.io')(server);
+
+io.on('connection', function(){
+  console.log("A new user conncted");
+})
+
 //Exporting the variable app on which I created the server. The listen method I will be use on file of database connection. And there I will lunch the app only when the databse is fully connected and loaded
-module.exports = app;
+module.exports = server;
 
