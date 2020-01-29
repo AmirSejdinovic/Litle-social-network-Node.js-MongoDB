@@ -10,6 +10,8 @@ export default class Chat{
       
       //Caling the methodd
       this.injectHTML();
+      //Creating the property which selects chat log
+      this.chatLog = document.querySelector("#chat");
       //Creating property with the chatfield selector
       this.chatField = document.querySelector("#chatField");
       //Creating the propert with chat form selector
@@ -64,9 +66,23 @@ export default class Chat{
 
     openConnection(){
       this.socket = io();
-      this.socket.on('chatMessageFromServer', function(data){
-         alert(data.message);
+      this.socket.on('chatMessageFromServer', (data)=>{
+        //Caling the method
+         this.displayMessageFromServer(data);
       })
+    }
+    //Creating the method
+    displayMessageFromServer(data){
+      //inserting the adhecent HTML with the input value
+      this.chatLog.insertAdjacentHTML('beforeend', `
+      <div class="chat-other">
+        <a href="#"><img class="avatar-tiny" src="${data.avatar}"></a>
+        <div class="chat-message"><div class="chat-message-inner">
+          <a href="#"><strong>${data.username}</strong></a>
+          ${data.message}
+        </div></div>
+      </div>
+      `)
     }
     
     //Creating method injectHTML
