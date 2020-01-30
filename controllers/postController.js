@@ -34,7 +34,7 @@ exports.viewSingle = async function(req,res){
       //In the argument we aceess to the id of the post 
       let post = await Post.findSingleById(req.params.id, req.visitorId);
 
-      res.render('single-post-screen', {post: post});
+      res.render('single-post-screen', {post: post, title: post.title});
     }catch{
 
       res.render('404');
