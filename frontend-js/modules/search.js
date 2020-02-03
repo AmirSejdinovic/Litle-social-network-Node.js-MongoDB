@@ -7,6 +7,7 @@ import DOMPurify from 'dompurify';
 export default class Search{
   //1. Create propreties to select DOM elements and keep track of any useful data
   constructor(){
+    this._csrf = document.querySelector('[name="_csrf"]').value;
     //Calling the inject html function
     this.injectHTML();
     this.headerSearchIcon = document.querySelector(".header-search-icon");
@@ -83,7 +84,7 @@ export default class Search{
   sendRequest(){
     //Calling the axios and adding the post method inside this method i provide the first the url than the second parametar is the value which will bee send via this request in my case it is the current value of input field
     //Because axios is return the promes i added then and catch method
-    axios.post('/search', {searchTerm: this.inputField.value}).then(response=>{
+    axios.post('/search', {_csrf: this._csrf,searchTerm: this.inputField.value}).then(response=>{
         console.log(response.data);
         //Calling the method
         this.renderResultsHTML(response.data);
