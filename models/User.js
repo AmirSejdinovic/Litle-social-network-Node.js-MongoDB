@@ -204,6 +204,22 @@ User.findByUsername = function(username){
    })
 }
 
+User.doesEmailExist = function(email){
+    return new Promise(async function(resolve, reject){
+          if(typeof(email) != "string"){
+                  resolve(false)
+                  return
+          }
+
+          let user = await usersCollection.findOneAndDelete({email: email});
+          if(user){
+             resolve(true)
+          }else{
+             resolve(false)
+          }
+    })
+}
+
 
 //Exports the function so I can use it in another file
 module.exports = User;
