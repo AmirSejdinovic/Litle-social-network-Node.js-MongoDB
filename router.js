@@ -20,6 +20,9 @@ router.post('/register', userController.register );
 router.post('/login', userController.login);
 //Creating the router for logout button 
 router.post('/logout', userController.logout);
+router.post('/doesUsernameExist', userController.doesUsernameExist);
+router.post('/doesEmailExist', userController.doesEmailExist);
+
 //POST RELATED ROUTES
 //Create post router
 //Here I include mutlitpe functios the frist funstion mustbelogedin will alow to render the view only to users which are logedin
